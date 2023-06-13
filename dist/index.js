@@ -212,9 +212,9 @@ const updateTestFlight = (appID, version, groupName, issuerId, keyId, privateKey
     yield client.checkBuildIsReady();
     yield client.getBetaBuildLocalizationsId();
     yield client.updateBetaBuildLocalization(whatsNew);
-    yield client.enableAutoNotify();
-    yield client.addBuildToBetaGroup(groupName);
-    yield client.submitForBetaReview();
+    // await client.enableAutoNotify()
+    // await client.addBuildToBetaGroup(groupName)
+    // await client.submitForBetaReview()
     console.log('Submitted for beta review');
 });
 exports.updateTestFlight = updateTestFlight;

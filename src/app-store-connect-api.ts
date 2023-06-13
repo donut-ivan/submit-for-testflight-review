@@ -248,8 +248,8 @@ export const updateTestFlight = async (
   await client.checkBuildIsReady()
   await client.getBetaBuildLocalizationsId()
   await client.updateBetaBuildLocalization(whatsNew)
-  await client.enableAutoNotify()
-  await client.addBuildToBetaGroup(groupName)
-  await client.submitForBetaReview()
+  // await client.enableAutoNotify()
+  // await client.addBuildToBetaGroup(groupName)
+  // await client.submitForBetaReview()
   console.log('Submitted for beta review')
 }
