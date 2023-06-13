@@ -82,7 +82,7 @@ class AppStoreRequestClient {
         return __awaiter(this, void 0, void 0, function* () {
             const params = {
                 'filter[app]': this.appID,
-                // 'filter[version]': this.version,
+                'filter[version]': this.version,
                 'filter[expired]': false,
                 'filter[processingState]': 'VALID'
             };
