@@ -84,11 +84,12 @@ class AppStoreRequestClient {
                 'filter[app]': this.appID,
                 'filter[version]': this.version,
                 'filter[expired]': false,
-                'filter[processingState]': 'VALID'
+                // 'filter[processingState]': 'VALID'
             };
             const url = 'builds';
             console.log('fetching last build id');
             const res = yield this.request('get', url, { params });
+            console.log('builds response', res);
             this.buildId = res.data[0].id;
         });
     }
