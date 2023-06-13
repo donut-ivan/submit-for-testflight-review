@@ -82,14 +82,14 @@ class AppStoreRequestClient {
         return __awaiter(this, void 0, void 0, function* () {
             const params = {
                 'filter[app]': this.appID,
-                'filter[version]': this.version,
+                // 'filter[version]': this.version,
                 'filter[expired]': false,
                 // 'filter[processingState]': 'VALID'
             };
             const url = 'builds';
             console.log('fetching last build id');
             const res = yield this.request('get', url, { params });
-            console.log('builds response', res);
+            console.log('builds response', JSON.stringify(res, null, 2));
             this.buildId = res.data[0].id;
         });
     }

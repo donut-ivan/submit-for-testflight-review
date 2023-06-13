@@ -90,14 +90,14 @@ class AppStoreRequestClient {
   async fetchLastBuildId() {
     const params = {
       'filter[app]': this.appID,
-      'filter[version]': this.version,
+      // 'filter[version]': this.version,
       'filter[expired]': false,
       // 'filter[processingState]': 'VALID'
     }
     const url = 'builds'
     console.log('fetching last build id')
     const res = await this.request('get', url, {params})
-    console.log('builds response', res)
+    console.log('builds response', JSON.stringify(res, null, 2))
     this.buildId = res.data[0].id
   }
 
