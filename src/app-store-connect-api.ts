@@ -90,9 +90,9 @@ class AppStoreRequestClient {
   async fetchLastBuildId() {
     const params = {
       'filter[app]': this.appID,
-      'filter[version]': this.version,
+      // 'filter[version]': this.version,
       'filter[expired]': false,
-      // 'filter[processingState]': 'VALID'
+      'filter[processingState]': 'VALID'
     }
     const url = 'builds'
     console.log('fetching last build id')
