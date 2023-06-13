@@ -87,6 +87,7 @@ class AppStoreRequestClient {
                 'filter[processingState]': 'VALID'
             };
             const url = 'builds';
+            console.log('fetching last build id');
             const res = yield this.request('get', url, { params });
             this.buildId = res.data[0].id;
         });
@@ -96,6 +97,7 @@ class AppStoreRequestClient {
      */
     getBetaBuildLocalizationsId() {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('fetching build localization ids');
             const response = yield this.request('get', `builds/${this.buildId}/betaBuildLocalizations`);
             const res = response.data;
             this.localizationId = res[0].id;
@@ -177,6 +179,7 @@ class AppStoreRequestClient {
                 'filter[isInternalGroup]': false
             };
             const url = 'betaGroups';
+            console.log('fetching beta groups');
             const res = yield this.request('get', url, { params: qs });
             const group = res.data[0];
             this.groupId = group.id;

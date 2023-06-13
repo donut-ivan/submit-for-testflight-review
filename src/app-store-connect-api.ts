@@ -95,6 +95,7 @@ class AppStoreRequestClient {
       'filter[processingState]': 'VALID'
     }
     const url = 'builds'
+    console.log('fetching last build id')
     const res = await this.request('get', url, {params})
     this.buildId = res.data[0].id
   }
@@ -103,6 +104,7 @@ class AppStoreRequestClient {
    * Get the beta build localization ID so we can update the "WhatsNew" section in TestFlight
    */
   async getBetaBuildLocalizationsId() {
+    console.log('fetching build localization ids')
     const response = await this.request(
       'get',
       `builds/${this.buildId}/betaBuildLocalizations`
@@ -194,6 +196,7 @@ class AppStoreRequestClient {
       'filter[isInternalGroup]': false
     }
     const url = 'betaGroups'
+    console.log('fetching beta groups')
     const res = await this.request('get', url, {params: qs})
     const group = res.data[0]
     this.groupId = group.id
