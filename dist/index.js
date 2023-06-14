@@ -83,7 +83,10 @@ class AppStoreRequestClient {
             const params = {
                 'filter[app]': this.appID,
                 'filter[version]': this.version,
+                // 'filter[preReleaseVersion.version]': '',
                 'filter[expired]': false,
+                'include': 'app,preReleaseVersion,buildBundles,buildBetaDetail',
+                // 'sort': '-uploadedDate',
                 // 'filter[processingState]': 'VALID'
             };
             const url = 'builds';
