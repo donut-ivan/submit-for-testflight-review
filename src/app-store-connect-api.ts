@@ -149,15 +149,21 @@ class AppStoreRequestClient {
 
   async checkBuildIsReady() {
     const betaBuildDetailData = await this.getBuildBetaDetails()
+
     const externalBuildState =
       betaBuildDetailData?.attributes.externalBuildState
     const internalBuildState =
       betaBuildDetailData?.attributes.internalBuildState
+
+    console.log('Current external state: ' + externalBuildState)
+    console.log('Current internal state: ' + internalBuildState)
+
     const acceptableBuildState = ['READY_FOR_BETA_TESTING', 'IN_BETA_TESTING']
     const rejectableBuildState = [
       'PROCESSING_EXCEPTION',
       'MISSING_EXPORT_COMPLIANCE'
     ]
+
     if (!externalBuildState || !internalBuildState) {
       throw 'Error querying build state.'
     } else if (
@@ -170,8 +176,6 @@ class AppStoreRequestClient {
     ) {
       throw externalBuildState
     } else {
-      console.log('Current external state: ' + externalBuildState)
-      console.log('Current internal state: ' + internalBuildState)
       throw 'AppStoreConnect is still processing the build.'
     }
   }
@@ -247,7 +251,7 @@ export const updateTestFlight = async (
     `Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}`
   )
   await client.fetchLastBuildId()
-  await client.checkBuildIsReady()
+  // await client.checkBuildIsReady()
   await client.getBetaBuildLocalizationsId()
   await client.updateBetaBuildLocalization(whatsNew)
   // await client.enableAutoNotify()

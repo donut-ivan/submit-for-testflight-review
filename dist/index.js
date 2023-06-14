@@ -135,6 +135,8 @@ class AppStoreRequestClient {
             const betaBuildDetailData = yield this.getBuildBetaDetails();
             const externalBuildState = betaBuildDetailData === null || betaBuildDetailData === void 0 ? void 0 : betaBuildDetailData.attributes.externalBuildState;
             const internalBuildState = betaBuildDetailData === null || betaBuildDetailData === void 0 ? void 0 : betaBuildDetailData.attributes.internalBuildState;
+            console.log('Current external state: ' + externalBuildState);
+            console.log('Current internal state: ' + internalBuildState);
             const acceptableBuildState = ['READY_FOR_BETA_TESTING', 'IN_BETA_TESTING'];
             const rejectableBuildState = [
                 'PROCESSING_EXCEPTION',
@@ -151,8 +153,6 @@ class AppStoreRequestClient {
                 throw externalBuildState;
             }
             else {
-                console.log('Current external state: ' + externalBuildState);
-                console.log('Current internal state: ' + internalBuildState);
                 throw 'AppStoreConnect is still processing the build.';
             }
         });
@@ -211,7 +211,7 @@ const updateTestFlight = (appID, version, groupName, issuerId, keyId, privateKey
     const client = new AppStoreRequestClient(issuerId, keyId, privateKey, appID, version);
     console.log(`Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}`);
     yield client.fetchLastBuildId();
-    yield client.checkBuildIsReady();
+    // await client.checkBuildIsReady()
     yield client.getBetaBuildLocalizationsId();
     yield client.updateBetaBuildLocalization(whatsNew);
     // await client.enableAutoNotify()
