@@ -22,7 +22,7 @@ async function run(): Promise<void> {
     )
   } catch (error) {
     // @ts-ignore
-    console.log('error', error.data)
+    console.log('error', error.response.data)
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
