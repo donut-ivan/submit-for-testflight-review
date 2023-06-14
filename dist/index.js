@@ -23,12 +23,13 @@ exports.updateTestFlight = void 0;
 const axios_1 = __importDefault(__nccwpck_require__(8757));
 const jsonwebtoken_1 = __nccwpck_require__(7486);
 class AppStoreRequestClient {
-    constructor(issuerId, keyId, privateKey, appID, version) {
+    constructor(issuerId, keyId, privateKey, appID, version, buildNumber) {
         this.issuerId = issuerId;
         this.keyId = keyId;
         this.privateKey = privateKey;
         this.appID = appID;
         this.version = version;
+        this.buildNumber = buildNumber;
         this.lastTokenTime = new Date().getTime();
         this.lastToken = '';
         this.tokenDuration = 60 * 10; //in seconds
@@ -82,8 +83,8 @@ class AppStoreRequestClient {
         return __awaiter(this, void 0, void 0, function* () {
             const params = {
                 'filter[app]': this.appID,
-                'filter[version]': this.version,
-                // 'filter[preReleaseVersion.version]': '',
+                'filter[version]': this.buildNumber,
+                'filter[preReleaseVersion.version]': this.version,
                 'filter[expired]': false,
                 'include': 'app,preReleaseVersion,buildBundles,buildBetaDetail',
                 // 'sort': '-uploadedDate',
@@ -211,8 +212,8 @@ class AppStoreRequestClient {
         });
     }
 }
-const updateTestFlight = (appID, version, groupName, issuerId, keyId, privateKey, whatsNew = '') => __awaiter(void 0, void 0, void 0, function* () {
-    const client = new AppStoreRequestClient(issuerId, keyId, privateKey, appID, version);
+const updateTestFlight = (appID, version, buildNumber, groupName, issuerId, keyId, privateKey, whatsNew = '') => __awaiter(void 0, void 0, void 0, function* () {
+    const client = new AppStoreRequestClient(issuerId, keyId, privateKey, appID, version, buildNumber);
     console.log(`Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}`);
     yield client.fetchLastBuildId();
     // await client.checkBuildIsReady()
@@ -273,12 +274,13 @@ function run() {
         try {
             const appId = core.getInput('app-id');
             const version = core.getInput('bundle-version-string');
+            const buildNumber = core.getInput('build-number');
             const groupName = core.getInput('group-name');
             const issuerId = core.getInput('issuer-id');
             const apiKeyId = core.getInput('api-key-id');
             const apiPrivateKey = core.getInput('api-private-key');
             const whatsnew = core.getInput('whats-new');
-            yield (0, app_store_connect_api_1.updateTestFlight)(appId, version, groupName, issuerId, apiKeyId, apiPrivateKey, whatsnew);
+            yield (0, app_store_connect_api_1.updateTestFlight)(appId, version, buildNumber, groupName, issuerId, apiKeyId, apiPrivateKey, whatsnew);
         }
         catch (error) {
             // @ts-ignore

@@ -5,6 +5,7 @@ async function run(): Promise<void> {
   try {
     const appId = core.getInput('app-id')
     const version = core.getInput('bundle-version-string')
+    const buildNumber = core.getInput('build-number')
     const groupName = core.getInput('group-name')
     const issuerId = core.getInput('issuer-id')
     const apiKeyId = core.getInput('api-key-id')
@@ -14,6 +15,7 @@ async function run(): Promise<void> {
     await updateTestFlight(
       appId,
       version,
+      buildNumber,
       groupName,
       issuerId,
       apiKeyId,

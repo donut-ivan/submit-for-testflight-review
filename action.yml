@@ -8,9 +8,9 @@ inputs:
   bundle-version-string:
     description: 'The CFBundleVersion of the build'
     required: true
-  # build-number:
-  #   description: 'The CFBundleVersion of the build'
-  #   required: true
+  build-number:
+    description: 'The CFBundleVersion of the build'
+    required: true
   group-name:
     description: 'The external testing group name'
     required: true

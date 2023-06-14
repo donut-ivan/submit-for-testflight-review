@@ -19,7 +19,8 @@ class AppStoreRequestClient {
     private keyId: string,
     private privateKey: string,
     private appID: string,
-    private version: string
+    private version: string,
+    private buildNumber: string,
   ) {}
 
   private lastTokenTime = new Date().getTime()
@@ -90,8 +91,8 @@ class AppStoreRequestClient {
   async fetchLastBuildId() {
     const params = {
       'filter[app]': this.appID,
-      'filter[version]': this.version,
-      // 'filter[preReleaseVersion.version]': '',
+      'filter[version]': this.buildNumber,
+      'filter[preReleaseVersion.version]': this.version,
       'filter[expired]': false,
       'include': 'app,preReleaseVersion,buildBundles,buildBetaDetail',
       // 'sort': '-uploadedDate',
@@ -239,6 +240,7 @@ class AppStoreRequestClient {
 export const updateTestFlight = async (
   appID: string,
   version: string,
+  buildNumber: string,
   groupName: string,
   issuerId: string,
   keyId: string,
@@ -250,7 +252,8 @@ export const updateTestFlight = async (
     keyId,
     privateKey,
     appID,
-    version
+    version,
+    buildNumber,
   )
 
   console.log(
