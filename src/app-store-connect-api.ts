@@ -203,16 +203,18 @@ class AppStoreRequestClient {
     this.groupId = group.id
   }
 
-  async addBuildToBetaGroup(groupName: string) {
-    await this.getGroupIdByName(groupName)
-    const data = [{type: 'builds', id: this.buildId}]
-    return await this.request(
-      'post',
-      `betaGroups/${this.groupId}/relationships/builds`,
-      {
-        data
-      }
-    )
+  async addBuildToBetaGroup(groupNames: string[]) {
+    for (const groupName of groupNames) {
+      await this.getGroupIdByName(groupName)
+      const data = [{type: 'builds', id: this.buildId}]
+      return await this.request(
+        'post',
+        `betaGroups/${this.groupId}/relationships/builds`,
+        {
+          data
+        }
+      )
+    }
   }
 
   async submitForBetaReview() {
@@ -249,7 +251,7 @@ export const updateTestFlight = async (
   await client.getBetaBuildLocalizationsId()
   await client.updateBetaBuildLocalization(whatsNew)
   // await client.enableAutoNotify()
-  await client.addBuildToBetaGroup(groupName)
+  await client.addBuildToBetaGroup(groupName.split(','))
   // await client.submitForBetaReview()
   console.log('Submitted for beta review')
 }

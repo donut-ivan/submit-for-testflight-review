@@ -186,13 +186,15 @@ class AppStoreRequestClient {
             this.groupId = group.id;
         });
     }
-    addBuildToBetaGroup(groupName) {
+    addBuildToBetaGroup(groupNames) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.getGroupIdByName(groupName);
-            const data = [{ type: 'builds', id: this.buildId }];
-            return yield this.request('post', `betaGroups/${this.groupId}/relationships/builds`, {
-                data
-            });
+            for (const groupName of groupNames) {
+                yield this.getGroupIdByName(groupName);
+                const data = [{ type: 'builds', id: this.buildId }];
+                return yield this.request('post', `betaGroups/${this.groupId}/relationships/builds`, {
+                    data
+                });
+            }
         });
     }
     submitForBetaReview() {
@@ -213,7 +215,7 @@ const updateTestFlight = (appID, version, groupName, issuerId, keyId, privateKey
     yield client.getBetaBuildLocalizationsId();
     yield client.updateBetaBuildLocalization(whatsNew);
     // await client.enableAutoNotify()
-    yield client.addBuildToBetaGroup(groupName);
+    yield client.addBuildToBetaGroup(groupName.split(','));
     // await client.submitForBetaReview()
     console.log('Submitted for beta review');
 });
