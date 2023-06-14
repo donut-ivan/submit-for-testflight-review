@@ -190,6 +190,7 @@ class AppStoreRequestClient {
         return __awaiter(this, void 0, void 0, function* () {
             for (const groupName of groupNames) {
                 yield this.getGroupIdByName(groupName);
+                console.log('adding groups to the build');
                 const data = [{ type: 'builds', id: this.buildId }];
                 return yield this.request('post', `betaGroups/${this.groupId}/relationships/builds`, {
                     data

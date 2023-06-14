@@ -210,6 +210,9 @@ class AppStoreRequestClient {
   async addBuildToBetaGroup(groupNames: string[]) {
     for (const groupName of groupNames) {
       await this.getGroupIdByName(groupName)
+
+      console.log('adding groups to the build')
+
       const data = [{type: 'builds', id: this.buildId}]
       return await this.request(
         'post',
