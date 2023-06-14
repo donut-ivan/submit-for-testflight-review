@@ -277,6 +277,8 @@ function run() {
             yield (0, app_store_connect_api_1.updateTestFlight)(appId, version, groupName, issuerId, apiKeyId, apiPrivateKey, whatsnew);
         }
         catch (error) {
+            // @ts-ignore
+            console.log('error', error.data);
             if (error instanceof Error)
                 core.setFailed(error.message);
         }

@@ -21,6 +21,8 @@ async function run(): Promise<void> {
       whatsnew
     )
   } catch (error) {
+    // @ts-ignore
+    console.log('error', error.data)
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
