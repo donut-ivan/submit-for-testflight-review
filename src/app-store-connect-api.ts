@@ -106,13 +106,13 @@ class AppStoreRequestClient {
     const url = 'builds'
     const res = await this.request('get', url, {params})
 
-    console.log('builds response', JSON.stringify(res, null, 2))
+    // console.log('builds response', JSON.stringify(res, null, 2))
 
     // if there is no builds found then wait 10 seconds and try again
     if (!res.data.length) {
       console.log('no builds, wait and try again');
 
-      await wait(10000);
+      await wait(20000);
       await this.fetchLastBuildId();
       return;
     }
@@ -194,9 +194,9 @@ class AppStoreRequestClient {
     ) {
       throw externalBuildState
     } else {
-      console.log('App still processing, wait 10 seconds and try again');
+      console.log('App still processing, wait and try again');
 
-      await wait(10000);
+      await wait(30000);
       await this.checkBuildIsReady();
 
       // throw 'AppStoreConnect is still processing the build.'
