@@ -13,6 +13,8 @@ interface BuildBetaDetails {
   internalBuildState: string
 }
 
+const wait = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
+
 class AppStoreRequestClient {
   constructor(
     private issuerId: string,
@@ -94,14 +96,26 @@ class AppStoreRequestClient {
       'filter[version]': this.buildNumber,
       'filter[preReleaseVersion.version]': this.version,
       'filter[expired]': false,
-      'include': 'app,preReleaseVersion,buildBundles,buildBetaDetail',
+      // 'include': 'app,preReleaseVersion,buildBundles,buildBetaDetail',
       // 'sort': '-uploadedDate',
       // 'filter[processingState]': 'VALID'
     }
-    const url = 'builds'
+
     console.log('fetching last build id')
+
+    const url = 'builds'
     const res = await this.request('get', url, {params})
+
     console.log('builds response', JSON.stringify(res, null, 2))
+
+    // if there is no builds found then wait 10 seconds and try again
+    if (!res.data.length) {
+      console.log('no builds, wait and try again');
+
+      await wait(10000);
+      await this.fetchLastBuildId();
+      return;
+    }
     this.buildId = res.data[0].id
   }
 
@@ -180,7 +194,12 @@ class AppStoreRequestClient {
     ) {
       throw externalBuildState
     } else {
-      throw 'AppStoreConnect is still processing the build.'
+      console.log('App still processing, wait 10 seconds and try again');
+
+      await wait(10000);
+      await this.checkBuildIsReady();
+
+      // throw 'AppStoreConnect is still processing the build.'
     }
   }
 
@@ -260,7 +279,7 @@ export const updateTestFlight = async (
     `Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}`
   )
   await client.fetchLastBuildId()
-  // await client.checkBuildIsReady()
+  await client.checkBuildIsReady()
   await client.getBetaBuildLocalizationsId()
   await client.updateBetaBuildLocalization(whatsNew)
   // await client.enableAutoNotify()

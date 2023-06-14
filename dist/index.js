@@ -22,6 +22,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updateTestFlight = void 0;
 const axios_1 = __importDefault(__nccwpck_require__(8757));
 const jsonwebtoken_1 = __nccwpck_require__(7486);
+const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
 class AppStoreRequestClient {
     constructor(issuerId, keyId, privateKey, appID, version, buildNumber) {
         this.issuerId = issuerId;
@@ -86,14 +87,21 @@ class AppStoreRequestClient {
                 'filter[version]': this.buildNumber,
                 'filter[preReleaseVersion.version]': this.version,
                 'filter[expired]': false,
-                'include': 'app,preReleaseVersion,buildBundles,buildBetaDetail',
+                // 'include': 'app,preReleaseVersion,buildBundles,buildBetaDetail',
                 // 'sort': '-uploadedDate',
                 // 'filter[processingState]': 'VALID'
             };
-            const url = 'builds';
             console.log('fetching last build id');
+            const url = 'builds';
             const res = yield this.request('get', url, { params });
             console.log('builds response', JSON.stringify(res, null, 2));
+            // if there is no builds found then wait 10 seconds and try again
+            if (!res.data.length) {
+                console.log('no builds, wait and try again');
+                yield wait(10000);
+                yield this.fetchLastBuildId();
+                return;
+            }
             this.buildId = res.data[0].id;
         });
     }
@@ -157,7 +165,10 @@ class AppStoreRequestClient {
                 throw externalBuildState;
             }
             else {
-                throw 'AppStoreConnect is still processing the build.';
+                console.log('App still processing, wait 10 seconds and try again');
+                yield wait(10000);
+                yield this.checkBuildIsReady();
+                // throw 'AppStoreConnect is still processing the build.'
             }
         });
     }
@@ -216,7 +227,7 @@ const updateTestFlight = (appID, version, buildNumber, groupName, issuerId, keyI
     const client = new AppStoreRequestClient(issuerId, keyId, privateKey, appID, version, buildNumber);
     console.log(`Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}`);
     yield client.fetchLastBuildId();
-    // await client.checkBuildIsReady()
+    yield client.checkBuildIsReady();
     yield client.getBetaBuildLocalizationsId();
     yield client.updateBetaBuildLocalization(whatsNew);
     // await client.enableAutoNotify()
