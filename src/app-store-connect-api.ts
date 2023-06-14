@@ -90,7 +90,7 @@ class AppStoreRequestClient {
   async fetchLastBuildId() {
     const params = {
       'filter[app]': this.appID,
-      // 'filter[version]': this.version,
+      'filter[version]': this.version,
       'filter[expired]': false,
       // 'filter[processingState]': 'VALID'
     }
@@ -194,7 +194,7 @@ class AppStoreRequestClient {
       'fields[apps]': 'betaGroups',
       'filter[app]': this.appID,
       'filter[name]': groupName,
-      'filter[isInternalGroup]': false
+      // 'filter[isInternalGroup]': false
     }
     const url = 'betaGroups'
     console.log('fetching beta groups')
@@ -249,7 +249,7 @@ export const updateTestFlight = async (
   await client.getBetaBuildLocalizationsId()
   await client.updateBetaBuildLocalization(whatsNew)
   // await client.enableAutoNotify()
-  // await client.addBuildToBetaGroup(groupName)
+  await client.addBuildToBetaGroup(groupName)
   // await client.submitForBetaReview()
   console.log('Submitted for beta review')
 }

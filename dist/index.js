@@ -82,7 +82,7 @@ class AppStoreRequestClient {
         return __awaiter(this, void 0, void 0, function* () {
             const params = {
                 'filter[app]': this.appID,
-                // 'filter[version]': this.version,
+                'filter[version]': this.version,
                 'filter[expired]': false,
                 // 'filter[processingState]': 'VALID'
             };
@@ -177,7 +177,7 @@ class AppStoreRequestClient {
                 'fields[apps]': 'betaGroups',
                 'filter[app]': this.appID,
                 'filter[name]': groupName,
-                'filter[isInternalGroup]': false
+                // 'filter[isInternalGroup]': false
             };
             const url = 'betaGroups';
             console.log('fetching beta groups');
@@ -213,7 +213,7 @@ const updateTestFlight = (appID, version, groupName, issuerId, keyId, privateKey
     yield client.getBetaBuildLocalizationsId();
     yield client.updateBetaBuildLocalization(whatsNew);
     // await client.enableAutoNotify()
-    // await client.addBuildToBetaGroup(groupName)
+    yield client.addBuildToBetaGroup(groupName);
     // await client.submitForBetaReview()
     console.log('Submitted for beta review');
 });
