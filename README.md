@@ -6,11 +6,13 @@ This tool is meant to submit builds that are already uploaded to TestFlight for 
 
 ```yml
 - name: 'Submit review for external beta testing'
-  uses: shichen85/submit-for-testflight-review@v1
+  uses: givedonut/submit-for-testflight-review@main
   with: 
     app-id: '123456789'
     bundle-version-string: '0.0.1'
-    group-name: 'beta'  
+    build-number: '10'
+    group-name: 'beta'
+    whats-new: 'new features'
     issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
     api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
     api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
