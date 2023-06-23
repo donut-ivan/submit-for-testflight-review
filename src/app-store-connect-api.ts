@@ -264,7 +264,8 @@ export const updateTestFlight = async (
   issuerId: string,
   keyId: string,
   privateKey: string,
-  whatsNew = ''
+  whatsNew = '',
+  shouldSubmit = false,
 ) => {
   const client = new AppStoreRequestClient(
     issuerId,
@@ -276,14 +277,16 @@ export const updateTestFlight = async (
   )
 
   console.log(
-    `Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}`
+    `Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}, ${shouldSubmit}`
   )
   await client.fetchLastBuildId()
   await client.checkBuildIsReady()
   await client.getBetaBuildLocalizationsId()
   await client.updateBetaBuildLocalization(whatsNew)
-  // await client.enableAutoNotify()
   await client.addBuildToBetaGroup(groupName.split(','))
-  // await client.submitForBetaReview()
+  if (shouldSubmit) {
+    await client.enableAutoNotify()
+    await client.submitForBetaReview()
+  }
   console.log('Submitted for beta review')
 }

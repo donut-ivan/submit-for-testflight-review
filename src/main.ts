@@ -11,6 +11,7 @@ async function run(): Promise<void> {
     const apiKeyId = core.getInput('api-key-id')
     const apiPrivateKey = core.getInput('api-private-key')
     const whatsnew = core.getInput('whats-new')
+    const shouldSubmit = !!core.getInput('submit-for-review');
 
     await updateTestFlight(
       appId,
@@ -20,7 +21,8 @@ async function run(): Promise<void> {
       issuerId,
       apiKeyId,
       apiPrivateKey,
-      whatsnew
+      whatsnew,
+      shouldSubmit
     )
   } catch (error) {
     // @ts-ignore
