@@ -232,6 +232,8 @@ const updateTestFlight = (appID, version, buildNumber, groupName, issuerId, keyI
     console.log(`Tester groups: ${groupName}`);
     console.log(`What's new: ${whatsNew}`);
     console.log(`Submit for review: ${shouldSubmit}`);
+    console.log(`=====================================`);
+    console.log('groups array', groupName.split(','));
     yield client.fetchLastBuildId();
     yield client.checkBuildIsReady();
     yield client.getBetaBuildLocalizationsId();

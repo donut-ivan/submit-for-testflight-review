@@ -285,6 +285,9 @@ export const updateTestFlight = async (
   console.log(`Tester groups: ${groupName}`)
   console.log(`What's new: ${whatsNew}`)
   console.log(`Submit for review: ${shouldSubmit}`)
+  console.log(`=====================================`)
+
+  console.log('groups array', groupName.split(','))
 
   await client.fetchLastBuildId()
   await client.checkBuildIsReady()
