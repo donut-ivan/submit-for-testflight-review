@@ -231,10 +231,13 @@ class AppStoreRequestClient {
   }
 
   async addBuildToBetaGroup(groupNames: string[]) {
+    console.log('adding groups to the build')
+
     for (const groupName of groupNames) {
+      console.log('group name:', groupName)
+
       await this.getGroupIdByName(groupName)
 
-      console.log('adding groups to the build')
 
       const data = [{type: 'builds', id: this.buildId}]
       return await this.request(
@@ -276,9 +279,13 @@ export const updateTestFlight = async (
     buildNumber,
   )
 
-  console.log(
-    `Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}, ${shouldSubmit}`
-  )
+  console.log(`Updating test flight`)
+  console.log(`APP ID: ${appID}`)
+  console.log(`Version: ${version}, ${buildNumber}`)
+  console.log(`Tester groups: ${groupName}`)
+  console.log(`What's new: ${whatsNew}`)
+  console.log(`Submit for review: ${shouldSubmit}`)
+
   await client.fetchLastBuildId()
   await client.checkBuildIsReady()
   await client.getBetaBuildLocalizationsId()
