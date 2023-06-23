@@ -176,6 +176,11 @@ class AppStoreRequestClient {
     console.log('Current external state: ' + externalBuildState)
     console.log('Current internal state: ' + internalBuildState)
 
+    if (internalBuildState === 'IN_BETA_TESTING' && externalBuildState === 'IN_BETA_TESTING') {
+      console.log('build already submitted')
+      return;
+    }
+
     const acceptableBuildState = ['READY_FOR_BETA_TESTING', 'IN_BETA_TESTING']
     const rejectableBuildState = [
       'PROCESSING_EXCEPTION',
@@ -236,11 +241,11 @@ class AppStoreRequestClient {
     for (const groupName of groupNames) {
       console.log('group name:', groupName)
 
-      await this.getGroupIdByName(groupName)
+      await this.getGroupIdByName(groupName.trim())
 
 
       const data = [{type: 'builds', id: this.buildId}]
-      return await this.request(
+      await this.request(
         'post',
         `betaGroups/${this.groupId}/relationships/builds`,
         {
