@@ -203,9 +203,10 @@ class AppStoreRequestClient {
     }
     addBuildToBetaGroup(groupNames) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('adding groups to the build');
             for (const groupName of groupNames) {
+                console.log('group name:', groupName);
                 yield this.getGroupIdByName(groupName);
-                console.log('adding groups to the build');
                 const data = [{ type: 'builds', id: this.buildId }];
                 return yield this.request('post', `betaGroups/${this.groupId}/relationships/builds`, {
                     data
@@ -223,16 +224,23 @@ class AppStoreRequestClient {
         });
     }
 }
-const updateTestFlight = (appID, version, buildNumber, groupName, issuerId, keyId, privateKey, whatsNew = '') => __awaiter(void 0, void 0, void 0, function* () {
+const updateTestFlight = (appID, version, buildNumber, groupName, issuerId, keyId, privateKey, whatsNew = '', shouldSubmit = false) => __awaiter(void 0, void 0, void 0, function* () {
     const client = new AppStoreRequestClient(issuerId, keyId, privateKey, appID, version, buildNumber);
-    console.log(`Updating test flight: ${appID}, ${version}, ${groupName}, ${whatsNew}`);
+    console.log(`Updating test flight`);
+    console.log(`APP ID: ${appID}`);
+    console.log(`Version: ${version}, ${buildNumber}`);
+    console.log(`Tester groups: ${groupName}`);
+    console.log(`What's new: ${whatsNew}`);
+    console.log(`Submit for review: ${shouldSubmit}`);
     yield client.fetchLastBuildId();
     yield client.checkBuildIsReady();
     yield client.getBetaBuildLocalizationsId();
     yield client.updateBetaBuildLocalization(whatsNew);
-    // await client.enableAutoNotify()
     yield client.addBuildToBetaGroup(groupName.split(','));
-    // await client.submitForBetaReview()
+    if (shouldSubmit) {
+        yield client.enableAutoNotify();
+        yield client.submitForBetaReview();
+    }
     console.log('Submitted for beta review');
 });
 exports.updateTestFlight = updateTestFlight;
@@ -291,7 +299,8 @@ function run() {
             const apiKeyId = core.getInput('api-key-id');
             const apiPrivateKey = core.getInput('api-private-key');
             const whatsnew = core.getInput('whats-new');
-            yield (0, app_store_connect_api_1.updateTestFlight)(appId, version, buildNumber, groupName, issuerId, apiKeyId, apiPrivateKey, whatsnew);
+            const shouldSubmit = !!core.getInput('submit-for-review');
+            yield (0, app_store_connect_api_1.updateTestFlight)(appId, version, buildNumber, groupName, issuerId, apiKeyId, apiPrivateKey, whatsnew, shouldSubmit);
         }
         catch (error) {
             // @ts-ignore
