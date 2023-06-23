@@ -199,7 +199,7 @@ class AppStoreRequestClient {
                 // 'filter[isInternalGroup]': false
             };
             const url = 'betaGroups';
-            console.log('fetching beta groups');
+            console.log('fetching beta group:', groupName);
             const res = yield this.request('get', url, { params: qs });
             const group = res.data[0];
             this.groupId = group.id;
@@ -209,7 +209,6 @@ class AppStoreRequestClient {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('adding groups to the build');
             for (const groupName of groupNames) {
-                console.log('group name:', groupName);
                 yield this.getGroupIdByName(groupName.trim());
                 const data = [{ type: 'builds', id: this.buildId }];
                 yield this.request('post', `betaGroups/${this.groupId}/relationships/builds`, {

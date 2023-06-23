@@ -229,7 +229,7 @@ class AppStoreRequestClient {
       // 'filter[isInternalGroup]': false
     }
     const url = 'betaGroups'
-    console.log('fetching beta groups')
+    console.log('fetching beta group:', groupName)
     const res = await this.request('get', url, {params: qs})
     const group = res.data[0]
     this.groupId = group.id
@@ -239,8 +239,6 @@ class AppStoreRequestClient {
     console.log('adding groups to the build')
 
     for (const groupName of groupNames) {
-      console.log('group name:', groupName)
-
       await this.getGroupIdByName(groupName.trim())
 
 
