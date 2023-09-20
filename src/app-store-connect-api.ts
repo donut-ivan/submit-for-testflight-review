@@ -31,6 +31,7 @@ class AppStoreRequestClient {
   private buildId = ''
   private localizationId = ''
   private groupId = ''
+  private errorsCount = 0;
 
   private generateToken = () => {
     const currentTime = new Date().getTime()
@@ -166,45 +167,60 @@ class AppStoreRequestClient {
   }
 
   async checkBuildIsReady() {
-    const betaBuildDetailData = await this.getBuildBetaDetails()
+    try {
+      const betaBuildDetailData = await this.getBuildBetaDetails()
+  
+      const externalBuildState =
+        betaBuildDetailData?.attributes.externalBuildState
+      const internalBuildState =
+        betaBuildDetailData?.attributes.internalBuildState
+  
+      console.log('Current external state: ' + externalBuildState)
+      console.log('Current internal state: ' + internalBuildState)
+  
+      if (internalBuildState === 'IN_BETA_TESTING' && externalBuildState === 'IN_BETA_TESTING') {
+        console.log('build already submitted')
+        return;
+      }
+  
+      const acceptableBuildState = ['READY_FOR_BETA_TESTING', 'IN_BETA_TESTING']
+      const rejectableBuildState = [
+        'PROCESSING_EXCEPTION',
+        'MISSING_EXPORT_COMPLIANCE'
+      ]
+  
+      if (!externalBuildState || !internalBuildState) {
+        throw 'Error querying build state.'
+      } else if (
+        externalBuildState == 'READY_FOR_BETA_SUBMISSION' &&
+        acceptableBuildState.includes(internalBuildState)
+      ) {
+      } else if (
+        rejectableBuildState.includes(externalBuildState) ||
+        rejectableBuildState.includes(internalBuildState)
+      ) {
+        throw externalBuildState
+      } else {
+        console.log('App still processing, wait and try again');
+  
+        await wait(60000);
+        await this.checkBuildIsReady();
+  
+        // throw 'AppStoreConnect is still processing the build.'
+      }
+    } catch (error) {
+      if (this.errorsCount >= 5) {
+        console.log('Failed after 5 retries. Exiting')
+        throw error;
+      }
 
-    const externalBuildState =
-      betaBuildDetailData?.attributes.externalBuildState
-    const internalBuildState =
-      betaBuildDetailData?.attributes.internalBuildState
+      console.log('Request is Failed, wait and try again');
+      console.log('Error:', error);
 
-    console.log('Current external state: ' + externalBuildState)
-    console.log('Current internal state: ' + internalBuildState)
-
-    if (internalBuildState === 'IN_BETA_TESTING' && externalBuildState === 'IN_BETA_TESTING') {
-      console.log('build already submitted')
-      return;
-    }
-
-    const acceptableBuildState = ['READY_FOR_BETA_TESTING', 'IN_BETA_TESTING']
-    const rejectableBuildState = [
-      'PROCESSING_EXCEPTION',
-      'MISSING_EXPORT_COMPLIANCE'
-    ]
-
-    if (!externalBuildState || !internalBuildState) {
-      throw 'Error querying build state.'
-    } else if (
-      externalBuildState == 'READY_FOR_BETA_SUBMISSION' &&
-      acceptableBuildState.includes(internalBuildState)
-    ) {
-    } else if (
-      rejectableBuildState.includes(externalBuildState) ||
-      rejectableBuildState.includes(internalBuildState)
-    ) {
-      throw externalBuildState
-    } else {
-      console.log('App still processing, wait and try again');
-
-      await wait(30000);
+      await wait(60000);
       await this.checkBuildIsReady();
 
-      // throw 'AppStoreConnect is still processing the build.'
+      this.errorsCount++;
     }
   }
 
