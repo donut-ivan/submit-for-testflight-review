@@ -108,11 +108,11 @@ class AppStoreRequestClient {
 
     // console.log('builds response', JSON.stringify(res, null, 2))
 
-    // if there is no builds found then wait 10 seconds and try again
+    // if there is no builds found then wait 1 minute and try again
     if (!res.data.length) {
       console.log('no builds, wait and try again');
 
-      await wait(20000);
+      await wait(60000);
       await this.fetchLastBuildId();
       return;
     }
