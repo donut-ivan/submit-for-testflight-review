@@ -129,7 +129,6 @@ class AppStoreRequestClient {
       'get',
       `builds/${this.buildId}/betaBuildLocalizations`
       )
-    console.log('response', response)
     const res = (
       response as {data: {attributes: BetaBuildLocalizations; id: string}[]}
     ).data
