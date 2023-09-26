@@ -111,8 +111,9 @@ class AppStoreRequestClient {
      */
     getBetaBuildLocalizationsId() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('fetching build localization ids');
+            console.log('fetching build localization ids', this.buildId);
             const response = yield this.request('get', `builds/${this.buildId}/betaBuildLocalizations`);
+            console.log('response', response);
             const res = response.data;
             this.localizationId = res[0].id;
         });

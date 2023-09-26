@@ -124,11 +124,12 @@ class AppStoreRequestClient {
    * Get the beta build localization ID so we can update the "WhatsNew" section in TestFlight
    */
   async getBetaBuildLocalizationsId() {
-    console.log('fetching build localization ids')
+    console.log('fetching build localization ids', this.buildId)
     const response = await this.request(
       'get',
       `builds/${this.buildId}/betaBuildLocalizations`
-    )
+      )
+    console.log('response', response)
     const res = (
       response as {data: {attributes: BetaBuildLocalizations; id: string}[]}
     ).data
